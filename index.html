@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Subway Surfers</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- Загрузка ассетов -->
+  <div id="loading-screen">
+    <h2 class="screen-title">Subway Surfers</h2>
+    <p id="loading-text">Загрузка моделей…</p>
+    <div id="loading-bar">
+      <div id="loading-progress"></div>
+    </div>
+  </div>
+
+  <!-- Выбор персонажа -->
+  <div id="character-selection" class="hidden">
+    <h2 class="screen-title">Выберите персонажа</h2>
+    <p class="screen-subtitle">Нажмите на героя, затем Start</p>
+    <div id="character-grid">
+      <button type="button" class="char-btn selected" data-character="jake">
+        <span class="char-icon">🏃</span>
+        <span class="char-name">Jake</span>
+      </button>
+      <button type="button" class="char-btn" data-character="tricky">
+        <span class="char-icon">🛹</span>
+        <span class="char-name">Tricky</span>
+      </button>
+      <button type="button" class="char-btn" data-character="missMaia">
+        <span class="char-icon">✨</span>
+        <span class="char-name">Miss Maia</span>
+      </button>
+      <button type="button" class="char-btn" data-character="yutani">
+        <span class="char-icon">🤖</span>
+        <span class="char-name">Yutani</span>
+      </button>
+    </div>
+    <p id="selected-char-label">Выбран: <strong>Jake</strong></p>
+    <button type="button" id="start-btn">Start</button>
+  </div>
+
+  <!-- Игровой HUD (скрыт до старта) -->
+  <div id="game-ui" class="hidden">
+    <div id="score-panel">
+      <div class="score-row">
+        <span class="score-label">Очки</span>
+        <span id="score-value" class="arcade-text">0</span>
+      </div>
+      <div class="score-row">
+        <span class="score-label">Дистанция</span>
+        <span id="distance-value" class="arcade-text">0</span>
+      </div>
+    </div>
+    <p id="controls-hint">← → полоса &nbsp;|&nbsp; Пробел — прыжок</p>
+  </div>
+
+  <canvas id="game-canvas"></canvas>
+
+  <div id="game-over" class="hidden">
+    <h2>GAME OVER</h2>
+    <p id="final-score-label">Ваш счёт: <span id="final-score" class="arcade-text">0</span></p>
+    <button type="button" id="restart-btn">RESTART</button>
+  </div>
+
+  <!-- Three.js 0.170.0 — версия должна совпадать с путями в importmap и main.js -->
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+      }
+    }
+  </script>
+  <script type="module" src="main.js"></script>
+</body>
+</html>

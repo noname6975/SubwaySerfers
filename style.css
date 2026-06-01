@@ -1,0 +1,395 @@
+/* =============================================================================
+   Subway Surfers — все экраны игры
+   ============================================================================= */
+
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #3dc8e8;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Общий класс скрытия — используется из JS: element.classList.add('hidden') */
+.hidden {
+  display: none !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  visibility: hidden !important;
+}
+
+/* Canvas — под всеми оверлеями */
+#game-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  z-index: 0;
+}
+
+/* =============================================================================
+   1. ЭКРАН ЗАГРУЗКИ
+   ============================================================================= */
+
+#loading-screen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 300;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+
+  /* Бирюзовый фон Subway Surfers */
+  background: linear-gradient(180deg, #3dc8e8 0%, #5ad4f0 45%, #7ee0f7 100%);
+
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transition: opacity 0.5s ease, visibility 0.5s ease;
+}
+
+#loading-screen .screen-title {
+  font-size: clamp(2.2rem, 7vw, 3.8rem);
+  font-weight: 900;
+  font-style: italic;
+  color: #ffe566;
+  -webkit-text-stroke: 4px #000000;
+  text-shadow: 5px 5px 0 #000;
+  text-align: center;
+}
+
+#loading-text {
+  color: #ffffff;
+  font-size: 1.1rem;
+  font-weight: 700;
+  text-shadow: 2px 2px 0 #000;
+}
+
+#loading-bar {
+  width: min(360px, 85vw);
+  height: 18px;
+  background: rgba(0, 0, 0, 0.2);
+  border: 4px solid #000;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+#loading-progress {
+  width: 0%;
+  height: 100%;
+  background: linear-gradient(90deg, #ffe566, #ffb800, #ff9500);
+  border-radius: 6px;
+  transition: width 0.2s ease;
+}
+
+/* =============================================================================
+   2. МЕНЮ ВЫБОРА ПЕРСОНАЖА
+   ============================================================================= */
+
+#character-selection {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 200;
+
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 22px;
+  padding: 24px;
+
+  background: linear-gradient(
+    180deg,
+    rgba(61, 200, 232, 0.94) 0%,
+    rgba(90, 212, 240, 0.9) 100%
+  );
+  backdrop-filter: blur(8px);
+
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transition: opacity 0.4s ease;
+}
+
+/* Видимо, когда JS снял .hidden */
+#character-selection:not(.hidden) {
+  display: flex;
+}
+
+#character-selection .screen-title {
+  font-size: clamp(1.8rem, 5vw, 2.8rem);
+  font-weight: 900;
+  font-style: italic;
+  color: #ffe566;
+  -webkit-text-stroke: 3px #000;
+  text-shadow: 4px 4px 0 #000;
+  text-align: center;
+}
+
+#character-selection .screen-subtitle {
+  color: #fff;
+  font-weight: 600;
+  text-shadow: 2px 2px 0 #000;
+  text-align: center;
+}
+
+#character-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  width: 100%;
+  max-width: 520px;
+}
+
+@media (min-width: 720px) {
+  #character-grid {
+    grid-template-columns: repeat(4, 1fr);
+    max-width: 880px;
+  }
+}
+
+.char-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 120px;
+  padding: 18px 12px;
+
+  background: linear-gradient(180deg, #fff6a8 0%, #ffe566 50%, #ffc800 100%);
+  border: 4px solid #000;
+  border-radius: 20px;
+  cursor: pointer;
+  box-shadow: 0 6px 0 #000;
+
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.char-btn:hover {
+  transform: scale(1.08) translateY(-4px);
+  box-shadow: 0 10px 0 #000, 0 0 24px rgba(255, 220, 0, 0.6);
+}
+
+.char-btn.selected {
+  background: linear-gradient(180deg, #fff 0%, #ffe566 100%);
+  transform: scale(1.05);
+  box-shadow: 0 8px 0 #000, 0 0 28px rgba(255, 200, 0, 0.75);
+  outline: 4px solid #ff6600;
+  outline-offset: 2px;
+}
+
+.char-icon {
+  font-size: 2.2rem;
+  line-height: 1;
+}
+
+.char-name {
+  font-size: 1rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  color: #1a1a1a;
+  letter-spacing: 0.05em;
+}
+
+#selected-char-label {
+  color: #fff;
+  font-size: 1.1rem;
+  font-weight: 700;
+  text-shadow: 2px 2px 0 #000;
+}
+
+#selected-char-label strong {
+  color: #ffe566;
+}
+
+#start-btn {
+  padding: 16px 52px;
+  font-size: 1.4rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #1a1a1a;
+  background: linear-gradient(180deg, #7fff7f 0%, #32cd32 55%, #228b22 100%);
+  border: 4px solid #000;
+  border-radius: 16px;
+  cursor: pointer;
+  box-shadow: 0 6px 0 #000;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+#start-btn:hover {
+  transform: scale(1.06) translateY(-2px);
+  box-shadow: 0 8px 0 #000;
+}
+
+#start-btn:active {
+  transform: translateY(4px);
+  box-shadow: 0 2px 0 #000;
+}
+
+/* =============================================================================
+   3. ИГРОВОЙ HUD
+   ============================================================================= */
+
+#game-ui {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 50;
+  pointer-events: none;
+}
+
+#game-ui:not(.hidden) {
+  display: block;
+}
+
+#score-panel {
+  position: fixed;
+  top: 20px;
+  right: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
+  z-index: 60;
+}
+
+.score-row {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.score-label {
+  font-size: 0.8rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: #fff;
+  text-shadow: 2px 2px 0 #000;
+  letter-spacing: 0.08em;
+}
+
+.arcade-text {
+  font-weight: 900;
+  font-style: italic;
+  font-size: 2.5rem;
+  line-height: 1;
+  color: #ffffff;
+  text-shadow: 2px 2px 0 #000, 3px 3px 0 #000, -1px -1px 0 #000;
+  -webkit-text-stroke: 2px #000;
+}
+
+#distance-value {
+  font-size: 2rem;
+}
+
+#controls-hint {
+  position: fixed;
+  bottom: 22px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #fff;
+  text-shadow: 2px 2px 0 #000;
+  z-index: 60;
+}
+
+/* =============================================================================
+   4. GAME OVER
+   ============================================================================= */
+
+#game-over {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 250;
+
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+
+  background: rgba(0, 0, 0, 0.72);
+  backdrop-filter: blur(6px);
+
+  pointer-events: auto;
+}
+
+#game-over:not(.hidden) {
+  display: flex;
+}
+
+#game-over h2 {
+  font-size: clamp(3rem, 12vw, 5.5rem);
+  font-weight: 900;
+  font-style: italic;
+  color: #ff2244;
+  -webkit-text-stroke: 5px #000;
+  text-shadow:
+    4px 4px 0 #000,
+    0 0 30px rgba(255, 50, 80, 0.8);
+  letter-spacing: 0.06em;
+  transform: rotate(-4deg);
+}
+
+#final-score-label {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #fff;
+  text-shadow: 2px 2px 0 #000;
+}
+
+#final-score {
+  font-size: 3.2rem;
+}
+
+#restart-btn {
+  padding: 16px 44px;
+  font-size: 1.25rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: #1a1a1a;
+  background: linear-gradient(180deg, #ffe566 0%, #ffb800 50%, #ff9500 100%);
+  border: 4px solid #000;
+  border-radius: 14px;
+  cursor: pointer;
+  box-shadow: 0 6px 0 #000;
+  transition: transform 0.12s ease;
+}
+
+#restart-btn:hover {
+  transform: scale(1.05);
+}
+
+#restart-btn:active {
+  transform: translateY(4px);
+  box-shadow: 0 2px 0 #000;
+}
